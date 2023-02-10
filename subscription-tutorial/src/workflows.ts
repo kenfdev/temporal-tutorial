@@ -12,8 +12,7 @@ export async function subscriptionWorkflow(email: string, trialPeriod: string | 
   wf.setHandler(cancelSubscription, () => void (isCanceled = true));
 
   await acts.sendWelcomeEmail(email);
-  await wf.sleep(trialPeriod);
-  if (isCanceled) {
+  if (await wf.condition(() => isCanceled, trialPeriod)) {
     await acts.sendCancellationEmailDuringTrialPeriod(email);
   } else {
     await acts.sendSubscriptionOverEmail(email);
