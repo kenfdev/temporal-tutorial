@@ -8,7 +8,8 @@
     "lint": "eslint .",
     "start": "ts-node src/worker.ts",
     "start.watch": "nodemon src/worker.ts",
-    "workflow": "ts-node src/client.ts"
+    "workflow": "ts-node src/scripts/executeWorkflow.ts",
+    "workflow:cancel": "ts-node src/scripts/cancelSubscription.ts"
   },
   "nodemonConfig": {
     "execMap": {

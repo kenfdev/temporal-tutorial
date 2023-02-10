@@ -1,5 +1,5 @@
 import { Connection, Client } from '@temporalio/client';
-import { subscriptionWorkflow } from './workflows';
+import { subscriptionWorkflow } from '../workflows';
 import { nanoid } from 'nanoid';
 
 async function run() {

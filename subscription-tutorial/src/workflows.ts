@@ -5,8 +5,17 @@ const acts = wf.proxyActivities<typeof activities>({
   startToCloseTimeout: '1 minute',
 });
 
+export const cancelSubscription = wf.defineSignal('cancelSignal');
+
 export async function subscriptionWorkflow(email: string, trialPeriod: string | number): Promise<void> {
+  let isCanceled = false;
+  wf.setHandler(cancelSubscription, () => void (isCanceled = true));
+
   await acts.sendWelcomeEmail(email);
   await wf.sleep(trialPeriod);
-  await acts.sendSubscriptionOverEmail(email);
+  if (isCanceled) {
+    await acts.sendCancellationEmailDuringTrialPeriod(email);
+  } else {
+    await acts.sendSubscriptionOverEmail(email);
+  }
 }
