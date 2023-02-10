@@ -1,5 +1,6 @@
 import * as wf from '@temporalio/workflow';
 import type * as activities from './activities';
+import { Customer } from './types';
 
 const acts = wf.proxyActivities<typeof activities>({
   startToCloseTimeout: '1 minute',
@@ -7,14 +8,14 @@ const acts = wf.proxyActivities<typeof activities>({
 
 export const cancelSubscription = wf.defineSignal('cancelSignal');
 
-export async function subscriptionWorkflow(email: string, trialPeriod: string | number): Promise<void> {
+export async function subscriptionWorkflow(customer: Customer, trialPeriod: string | number): Promise<void> {
   let isCanceled = false;
   wf.setHandler(cancelSubscription, () => void (isCanceled = true));
 
-  await acts.sendWelcomeEmail(email);
+  await acts.sendWelcomeEmail(customer);
   if (await wf.condition(() => isCanceled, trialPeriod)) {
-    await acts.sendCancellationEmailDuringTrialPeriod(email);
+    await acts.sendCancellationEmailDuringTrialPeriod(customer);
   } else {
-    await acts.sendSubscriptionOverEmail(email);
+    await acts.sendSubscriptionOverEmail(customer);
   }
 }

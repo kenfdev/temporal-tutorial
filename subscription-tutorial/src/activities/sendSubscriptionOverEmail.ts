@@ -1,3 +1,5 @@
-export async function sendSubscriptionOverEmail(email: string) {
-  console.log(`Sending subscription over email to ${email}`);
+import { Customer } from '../types';
+
+export async function sendSubscriptionOverEmail(customer: Customer) {
+  console.log(`Sending subscription over email to ${customer.email}`);
 }

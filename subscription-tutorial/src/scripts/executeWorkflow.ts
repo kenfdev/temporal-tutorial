@@ -1,22 +1,45 @@
 import { Connection, Client } from '@temporalio/client';
 import { subscriptionWorkflow } from '../workflows';
 import { nanoid } from 'nanoid';
+import { Customer } from '../types';
 
 async function run() {
   const connection = await Connection.connect({ address: 'temporal:7233' });
 
   const client = new Client({ connection });
 
-  const handle = await client.workflow.start(subscriptionWorkflow, {
-    args: ['hoge@example.com', '30 seconds'],
-    taskQueue: 'subscription-tutorial',
-    // in practice, use a meaningful business ID, like customerId or transactionId
-    workflowId: 'workflow-' + nanoid(),
-  });
-  console.log(`Started workflow ${handle.workflowId}`);
+  const customers = [1, 2, 3, 4, 5].map(
+    (i) =>
+      ({
+        firstName: 'First Name' + i,
+        lastName: 'Last Name' + i,
+        email: `email-${i}@example.com`,
+        subscription: {
+          trialPeriod: 3000 + i * 1000, // 3 seconds,
+          billingPeriod: 3000 + i, // 3 seconds,
+          maxBillingPeriods: 3,
+          initialBillingPeriodCharge: 120 + i * 10,
+        },
+        id: `id-${i}`,
+      } as Customer)
+  );
 
-  // optional: wait for client result
-  console.log(await handle.result());
+  const results = await Promise.all(
+    customers.map((customer) =>
+      client.workflow
+        .start(subscriptionWorkflow, {
+          args: [customer, '10 mins'],
+          taskQueue: 'subscription-tutorial',
+          // in practice, use a meaningful business ID, like customerId or transactionId
+          workflowId: 'workflow-' + nanoid(),
+        })
+        .catch((err) => console.error('Unable to execute workflow', err))
+    )
+  );
+
+  results.forEach((result) => {
+    console.log('Workflow result', result);
+  });
 }
 
 run().catch((err) => {

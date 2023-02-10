@@ -1,12 +1,12 @@
 export type Customer = {
-  FirstName: string;
-  LastName: string;
-  Email: string;
-  Subscription: {
-    TrialPeriod: number;
-    BillingPeriod: number;
-    MaxBillingPeriods: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  subscription: {
+    trialPeriod: number;
+    billingPeriod: number;
+    maxBillingPeriods: number;
     initialBillingPeriodCharge: number;
   };
-  Id: string;
+  id: string;
 };
