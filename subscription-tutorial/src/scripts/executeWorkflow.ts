@@ -15,8 +15,8 @@ async function run() {
         lastName: 'Last Name' + i,
         email: `email-${i}@example.com`,
         subscription: {
-          trialPeriod: 3000 + i * 1000, // 3 seconds,
-          billingPeriod: 3000 + i, // 3 seconds,
+          trialPeriod: 3000 + i * 10000, // 3+ seconds,
+          billingPeriod: 3000 + i * 10000, // 3+ seconds,
           maxBillingPeriods: 3,
           initialBillingPeriodCharge: 120 + i * 10,
         },
@@ -28,7 +28,7 @@ async function run() {
     customers.map((customer) =>
       client.workflow
         .start(subscriptionWorkflow, {
-          args: [customer, '10 mins'],
+          args: [customer],
           taskQueue: 'subscription-tutorial',
           // in practice, use a meaningful business ID, like customerId or transactionId
           workflowId: 'workflow-' + nanoid(),
