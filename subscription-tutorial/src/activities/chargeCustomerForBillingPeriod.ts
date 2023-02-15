@@ -1,5 +1,5 @@
 import { Customer } from '../types';
 
-export async function chargeCustomerForBillingPeriod(customer: Customer) {
-  console.log(`Charging ${customer.email} amount ${customer.subscription.initialBillingPeriodCharge} for their billing period`);
+export async function chargeCustomerForBillingPeriod(customer: Customer, chargeAmount: number) {
+  console.log(`Charging ${customer.email} amount ${chargeAmount} for their billing period`);
 }

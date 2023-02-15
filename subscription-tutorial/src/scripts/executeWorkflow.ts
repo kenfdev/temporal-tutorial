@@ -1,6 +1,5 @@
 import { Connection, Client } from '@temporalio/client';
 import { subscriptionWorkflow } from '../workflows';
-import { nanoid } from 'nanoid';
 import { Customer } from '../types';
 
 async function run() {
@@ -25,13 +24,13 @@ async function run() {
   );
 
   const results = await Promise.all(
-    customers.map((customer) =>
+    customers.map((customer, index) =>
       client.workflow
         .start(subscriptionWorkflow, {
           args: [customer],
           taskQueue: 'subscription-tutorial',
           // in practice, use a meaningful business ID, like customerId or transactionId
-          workflowId: 'workflow-' + nanoid(),
+          workflowId: 'workflow-' + index,
         })
         .catch((err) => console.error('Unable to execute workflow', err))
     )
